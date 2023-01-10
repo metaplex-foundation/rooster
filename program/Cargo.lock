@@ -1842,13 +1842,14 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata"
 version = "1.6.4"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
 dependencies = [
  "arrayref",
  "borsh",
  "mpl-token-auth-rules",
- "mpl-token-metadata-context-derive 0.0.1",
+ "mpl-token-metadata-context-derive 0.0.1 (git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor)",
  "mpl-token-vault",
- "mpl-utils 0.0.5",
+ "mpl-utils 0.0.5 (git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor)",
  "num-derive",
  "num-traits",
  "shank 0.0.11",
@@ -1861,6 +1862,8 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata-context-derive"
 version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4d72db771ffb888fd22278b58cd91d50f2fc47c9705acb9f04c00b4ecaa80fc"
 dependencies = [
  "quote 1.0.23",
  "syn 1.0.107",
@@ -1869,8 +1872,7 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata-context-derive"
 version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4d72db771ffb888fd22278b58cd91d50f2fc47c9705acb9f04c00b4ecaa80fc"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
 dependencies = [
  "quote 1.0.23",
  "syn 1.0.107",
@@ -1893,6 +1895,8 @@ dependencies = [
 [[package]]
 name = "mpl-utils"
 version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "330468b3ea93d306ed5ae5e389b0b64cfbc43fcd29a4eeae74e20f13c979e7a5"
 dependencies = [
  "arrayref",
  "borsh",
@@ -1903,8 +1907,7 @@ dependencies = [
 [[package]]
 name = "mpl-utils"
 version = "0.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "330468b3ea93d306ed5ae5e389b0b64cfbc43fcd29a4eeae74e20f13c979e7a5"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
 dependencies = [
  "arrayref",
  "borsh",
