@@ -22,8 +22,7 @@ pub mod pda;
 pub mod processor;
 pub mod state;
 
-pub use mpl_token_metadata;
-pub use solana_program;
+pub use mpl_token_metadata::processor::AuthorizationData;
 
 solana_program::declare_id!("MyProgram1111111111111111111111111111111111");
 
