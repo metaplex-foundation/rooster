@@ -7,25 +7,29 @@ use solana_program::{
 use thiserror::Error;
 
 #[derive(Error, Clone, Debug, Eq, PartialEq, FromPrimitive)]
-pub enum ErrorThingy {
+pub enum Crows {
     /// Error description
-    #[error("Error message")]
-    ErrorName,
+    #[error("The 🐓 crows: Authority key is not a signer")]
+    NotASigner,
+    #[error("The 🐓 crows: Invalid Rooster PDA derivation")]
+    RoosterPDAInvalid,
+    #[error("The 🐓 crows: Transfer builder failed")]
+    TransferBuilderFailed,
 }
 
-impl PrintProgramError for ErrorThingy {
+impl PrintProgramError for Crows {
     fn print<E>(&self) {
         msg!(&self.to_string());
     }
 }
 
-impl From<ErrorThingy> for ProgramError {
-    fn from(e: ErrorThingy) -> Self {
+impl From<Crows> for ProgramError {
+    fn from(e: Crows) -> Self {
         ProgramError::Custom(e as u32)
     }
 }
 
-impl<T> DecodeError<T> for ErrorThingy {
+impl<T> DecodeError<T> for Crows {
     fn type_of() -> &'static str {
         "Error Thingy"
     }

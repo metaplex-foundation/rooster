@@ -14,7 +14,7 @@ $ yarn rename -n cool_program_name -i NewProgramKeypair1111111111111111111111111
 ```
 
 Values that will be replaced:
-- `my_program_name` (and `my-program-name`)
+- `my_program_name` (and `rooster`)
 - `MyProgram1111111111111111111111111111111111`
 
 ---
