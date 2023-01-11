@@ -22,9 +22,10 @@ pub mod pda;
 pub mod processor;
 pub mod state;
 
+pub use mpl_token_metadata::instruction::DelegateRole;
 pub use mpl_token_metadata::processor::AuthorizationData;
 
-solana_program::declare_id!("MyProgram1111111111111111111111111111111111");
+solana_program::declare_id!("roosk2HjiriyUPxLDSaHbyrmyxieuCyCmAn9F3rV5M9");
 
 pub const SPL_TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 pub const SPL_ATA_TOKEN_PROGRAM_ID: Pubkey =

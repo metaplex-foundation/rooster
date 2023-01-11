@@ -15,6 +15,8 @@ pub enum Crows {
     RoosterPDAInvalid,
     #[error("The 🐓 crows: Transfer builder failed")]
     TransferBuilderFailed,
+    #[error("The 🐓 crows: Delegate builder failed")]
+    DelegateBuilderFailed,
 }
 
 impl PrintProgramError for Crows {
