@@ -4,6 +4,8 @@ target/
 **/.DS_Store
 .anchor/
 
+build.sh
+
 node_modules/
 **/*.rs.bk
 build/
