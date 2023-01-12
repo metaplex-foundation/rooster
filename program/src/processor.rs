@@ -79,8 +79,8 @@ pub fn withdraw(
     let mint_info = next_account_info(account_iter)?;
     let metadata_info = next_account_info(account_iter)?;
     let edition_info = next_account_info(account_iter)?;
-    let token_record_info = next_account_info(account_iter)?;
-    let new_token_record_info = next_account_info(account_iter)?;
+    let owner_token_record_info = next_account_info(account_iter)?;
+    let destination_token_record_info = next_account_info(account_iter)?;
     let token_metadata_program_info = next_account_info(account_iter)?;
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
@@ -108,8 +108,8 @@ pub fn withdraw(
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
         .edition(*edition_info.key)
-        .token_record(*token_record_info.key)
-        .new_token_record(*new_token_record_info.key)
+        .owner_token_record(*owner_token_record_info.key)
+        .destination_token_record(*destination_token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .payer(*authority_info.key);
 
@@ -135,8 +135,8 @@ pub fn withdraw(
         mint_info.clone(),
         metadata_info.clone(),
         edition_info.clone(),
-        token_record_info.clone(),
-        new_token_record_info.clone(),
+        owner_token_record_info.clone(),
+        destination_token_record_info.clone(),
         rule_set_info.clone(),
         authority_info.clone(),
         token_metadata_program_info.clone(),
