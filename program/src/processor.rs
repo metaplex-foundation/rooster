@@ -79,6 +79,7 @@ pub fn withdraw(
     let mint_info = next_account_info(account_iter)?;
     let metadata_info = next_account_info(account_iter)?;
     let edition_info = next_account_info(account_iter)?;
+    let token_record_info = next_account_info(account_iter)?;
     let token_metadata_program_info = next_account_info(account_iter)?;
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
@@ -105,6 +106,7 @@ pub fn withdraw(
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
         .edition(*edition_info.key)
+        .token_record(*token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .payer(*authority_info.key);
 
@@ -127,6 +129,7 @@ pub fn withdraw(
         metadata_info.clone(),
         edition_info.clone(),
         authority_info.clone(),
+        token_record_info.clone(),
         token_metadata_program_info.clone(),
         system_program_info.clone(),
         sysvar_instructions_info.clone(),
@@ -160,7 +163,7 @@ pub fn delegate(
     let mint_info = next_account_info(account_iter)?;
     let metadata_info = next_account_info(account_iter)?;
     let edition_info = next_account_info(account_iter)?;
-    let delegate_record_info = next_account_info(account_iter)?;
+    let token_record_info = next_account_info(account_iter)?;
     let token_metadata_program_info = next_account_info(account_iter)?;
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
@@ -169,7 +172,7 @@ pub fn delegate(
 
     let signer_seeds = &[b"rooster", authority.as_ref(), &[bump]];
 
-    let transfer_args = mpl_token_metadata::instruction::DelegateArgs::TransferV1 {
+    let delegate_args = mpl_token_metadata::instruction::DelegateArgs::TransferV1 {
         amount,
         authorization_data: None,
     };
@@ -178,14 +181,14 @@ pub fn delegate(
     builder
         .approver(*rooster_pda_info.key)
         .delegate(*delegate_info.key)
-        .delegate_record(*delegate_record_info.key)
+        .token_record(*token_record_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
         .master_edition(*edition_info.key)
         .payer(*delegate_info.key);
 
-    let build_result = builder.build(transfer_args);
+    let build_result = builder.build(delegate_args);
 
     let instruction = match build_result {
         Ok(delegate) => delegate.instruction(),
@@ -197,7 +200,7 @@ pub fn delegate(
 
     let account_infos = [
         delegate_info.clone(),
-        delegate_record_info.clone(),
+        token_record_info.clone(),
         token_info.clone(),
         rooster_pda_info.clone(),
         mint_info.clone(),

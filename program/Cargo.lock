@@ -1842,7 +1842,7 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata"
 version = "1.6.4"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#b50af3bb6ff2275868f10b5ec5e8eb0d5e65be43"
 dependencies = [
  "arrayref",
  "borsh",
@@ -1872,7 +1872,7 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata-context-derive"
 version = "0.0.1"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#b50af3bb6ff2275868f10b5ec5e8eb0d5e65be43"
 dependencies = [
  "quote 1.0.23",
  "syn 1.0.107",
@@ -1907,7 +1907,7 @@ dependencies = [
 [[package]]
 name = "mpl-utils"
 version = "0.0.5"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#56278dedcb2d186a2d99c2571a4a1b034af5ec0d"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=vanderwaal/transfer-refactor#b50af3bb6ff2275868f10b5ec5e8eb0d5e65be43"
 dependencies = [
  "arrayref",
  "borsh",

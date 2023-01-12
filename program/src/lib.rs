@@ -22,8 +22,8 @@ pub mod pda;
 pub mod processor;
 pub mod state;
 
-pub use mpl_token_metadata::instruction::DelegateRole;
 pub use mpl_token_metadata::processor::AuthorizationData;
+pub use mpl_token_metadata::state::TokenDelegateRole;
 
 solana_program::declare_id!("roosk2HjiriyUPxLDSaHbyrmyxieuCyCmAn9F3rV5M9");
 

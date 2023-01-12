@@ -1,7 +1,5 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use mpl_token_metadata::{
-    instruction::DelegateRole, pda::find_delegate_account, processor::AuthorizationData,
-};
+use mpl_token_metadata::{pda::find_token_record_account, processor::AuthorizationData};
 use shank::ShankInstruction;
 
 use super::*;
@@ -38,7 +36,7 @@ pub enum RoosterCommand {
     #[account(5, name="mint", desc = "Token mint")]
     #[account(6, writable, name="metadata", desc = "Token metadata account")]
     #[account(7, name="edition", desc = "Token edition account")]
-    #[account(8, name="delegate_record", desc = "Collection delegate record account")]
+    #[account(8, name="token_record", desc = "Token record account")]
     #[account(9, name="token_metadata_program", desc = "The token metadata program")]
     #[account(10, name="system_program", desc = "The system program")]
     #[account(11, name="sysvar_instructions", desc = "The sysvar instructions")]
@@ -89,6 +87,8 @@ pub fn withdraw(
     rule_set: Pubkey,
     args: WithdrawArgs,
 ) -> Instruction {
+    let (token_record, _) = find_token_record_account(&mint, &rooster_pda);
+
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -100,6 +100,7 @@ pub fn withdraw(
             AccountMeta::new(mint, false),
             AccountMeta::new(metadata, false),
             AccountMeta::new(edition, false),
+            AccountMeta::new(token_record, false),
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
@@ -120,11 +121,9 @@ pub fn delegate(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
-    delegate_role: DelegateRole,
     args: DelegateArgs,
 ) -> Instruction {
-    let (delegate_record, _bump) =
-        find_delegate_account(&mint, delegate_role, &rooster_pda, &delegate);
+    let (token_record, _bump) = find_token_record_account(&mint, &rooster_pda);
 
     Instruction {
         program_id: crate::ID,
@@ -135,7 +134,7 @@ pub fn delegate(
             AccountMeta::new_readonly(mint, false),
             AccountMeta::new(metadata, false),
             AccountMeta::new_readonly(edition, false),
-            AccountMeta::new(delegate_record, false),
+            AccountMeta::new(token_record, false),
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
