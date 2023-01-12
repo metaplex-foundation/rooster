@@ -80,6 +80,7 @@ pub fn withdraw(
     let metadata_info = next_account_info(account_iter)?;
     let edition_info = next_account_info(account_iter)?;
     let token_record_info = next_account_info(account_iter)?;
+    let new_token_record_info = next_account_info(account_iter)?;
     let token_metadata_program_info = next_account_info(account_iter)?;
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
@@ -96,6 +97,7 @@ pub fn withdraw(
         amount: 1,
     };
 
+    msg!("setting up builder");
     let mut builder = TransferBuilder::new();
     builder
         .authority(*rooster_pda_info.key)
@@ -107,13 +109,18 @@ pub fn withdraw(
         .metadata(*metadata_info.key)
         .edition(*edition_info.key)
         .token_record(*token_record_info.key)
+        .new_token_record(*new_token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .payer(*authority_info.key);
 
+    msg!("building transfer instruction");
     let build_result = builder.build(transfer_args);
 
     let instruction = match build_result {
-        Ok(transfer) => transfer.instruction(),
+        Ok(transfer) => {
+            msg!("transfer instruction built");
+            transfer.instruction()
+        }
         Err(err) => {
             msg!("Error building transfer instruction: {:?}", err);
             return Err(Crows::TransferBuilderFailed.into());
@@ -121,24 +128,26 @@ pub fn withdraw(
     };
 
     let account_infos = [
-        token_info.clone(),
         rooster_pda_info.clone(),
-        destination_info.clone(),
+        token_info.clone(),
         destination_owner_info.clone(),
+        destination_info.clone(),
         mint_info.clone(),
         metadata_info.clone(),
         edition_info.clone(),
-        authority_info.clone(),
         token_record_info.clone(),
+        new_token_record_info.clone(),
+        rule_set_info.clone(),
+        authority_info.clone(),
         token_metadata_program_info.clone(),
         system_program_info.clone(),
         sysvar_instructions_info.clone(),
         spl_token_program_info.clone(),
         spl_ata_program_info.clone(),
         mpl_token_auth_rules_program_info.clone(),
-        rule_set_info.clone(),
     ];
 
+    msg!("invoking transfer instruction");
     invoke_signed(&instruction, &account_infos, &[signer_seeds]).unwrap();
 
     Ok(())
