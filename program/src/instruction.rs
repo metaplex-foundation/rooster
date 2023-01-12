@@ -87,8 +87,8 @@ pub fn withdraw(
     rule_set: Pubkey,
     args: WithdrawArgs,
 ) -> Instruction {
-    let (token_record, _) = find_token_record_account(&mint, &rooster_pda);
-    let (new_token_record, _) = find_token_record_account(&mint, &destination_owner);
+    let (owner_token_record, _) = find_token_record_account(&mint, &rooster_pda);
+    let (destination_token_record, _) = find_token_record_account(&mint, &destination_owner);
 
     Instruction {
         program_id: crate::ID,
@@ -101,8 +101,8 @@ pub fn withdraw(
             AccountMeta::new(mint, false),
             AccountMeta::new(metadata, false),
             AccountMeta::new(edition, false),
-            AccountMeta::new(token_record, false),
-            AccountMeta::new(new_token_record, false),
+            AccountMeta::new(owner_token_record, false),
+            AccountMeta::new(destination_token_record, false),
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
