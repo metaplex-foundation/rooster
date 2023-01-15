@@ -25,7 +25,7 @@ pub mod state;
 pub use mpl_token_metadata::processor::AuthorizationData;
 pub use mpl_token_metadata::state::TokenDelegateRole;
 
-solana_program::declare_id!("roosk2HjiriyUPxLDSaHbyrmyxieuCyCmAn9F3rV5M9");
+solana_program::declare_id!("Roostrnex2Z9Y2XZC49sFAdZARP8E4iFpEnZC5QJWdz");
 
 pub const SPL_TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 pub const SPL_ATA_TOKEN_PROGRAM_ID: Pubkey =

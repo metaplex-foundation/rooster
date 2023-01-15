@@ -1942,7 +1942,7 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata"
 version = "1.6.4"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#43b3b37c7fbd1b61a5f1bdc105762880ec38ae84"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#7b608df4290117db2eaa9b3260b53b25bac3f6f8"
 dependencies = [
  "arrayref",
  "borsh",
@@ -1972,7 +1972,7 @@ dependencies = [
 [[package]]
 name = "mpl-token-metadata-context-derive"
 version = "0.0.1"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#43b3b37c7fbd1b61a5f1bdc105762880ec38ae84"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#7b608df4290117db2eaa9b3260b53b25bac3f6f8"
 dependencies = [
  "quote 1.0.23",
  "syn 1.0.107",
@@ -2007,7 +2007,7 @@ dependencies = [
 [[package]]
 name = "mpl-utils"
 version = "0.0.5"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#43b3b37c7fbd1b61a5f1bdc105762880ec38ae84"
+source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#7b608df4290117db2eaa9b3260b53b25bac3f6f8"
 dependencies = [
  "arrayref",
  "borsh",
