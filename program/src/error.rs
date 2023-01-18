@@ -17,6 +17,10 @@ pub enum Crows {
     TransferBuilderFailed,
     #[error("The 🐓 crows: Delegate builder failed")]
     DelegateBuilderFailed,
+    #[error("The 🐓 crows: Delegate builder failed")]
+    LockBuilderFailed,
+    #[error("The 🐓 crows: Delegate builder failed")]
+    UnlockBuilderFailed,
 }
 
 impl PrintProgramError for Crows {

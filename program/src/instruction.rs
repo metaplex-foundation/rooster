@@ -5,16 +5,29 @@ use shank::ShankInstruction;
 use super::*;
 
 #[repr(C)]
-#[derive(BorshSerialize, BorshDeserialize, PartialEq, Debug, Clone)]
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
 pub struct WithdrawArgs {
     pub auth_data: AuthorizationData,
 }
 
 #[repr(C)]
-#[derive(BorshSerialize, BorshDeserialize, PartialEq, Debug, Clone)]
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
 pub struct DelegateArgs {
     pub amount: u64,
     pub authority: Pubkey,
+    pub bump: u8,
+}
+
+#[repr(C)]
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
+pub struct LockArgs {
+    pub amount: u64,
+    pub bump: u8,
+}
+
+#[repr(C)]
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
+pub struct UnlockArgs {
     pub bump: u8,
 }
 
@@ -60,6 +73,59 @@ pub enum RoosterCommand {
     #[account(10, name="spl_token_program", desc = "The token program")]
     Delegate(DelegateArgs),
     
+    /// Locks a (non-programmable) token inplace via Token Metadata CPI
+    #[account(0, name="delegate", desc="Delegate PDA")]
+    #[account(1, signer, name="token_owner", desc="Token owner")]
+    #[account(2, writable, name="token", desc="Token account")]
+    #[account(3, name="mint", desc="Mint account")]
+    #[account(4, writable, name="metadata", desc="Metadata account")]
+    #[account(5, name="edition", desc="Edition account")]
+    #[account(6, name="token_metadata_program", desc = "The token metadata program")]
+    #[account(7, name="system_program", desc="System program")]
+    #[account(8, name="sysvar_instructions", desc="System program")]
+    #[account(9, name="spl_token_program", desc="SPL Token Program")]
+    Lock(LockArgs),
+
+    /// Unlocks a (non-programmable) token inplace via Token Metadata CPI
+    #[account(0, name="delegate", desc="Delegate PDA")]
+    #[account(1, signer, name="token_owner", desc="Token owner")]
+    #[account(2, writable, name="token", desc="Token account")]
+    #[account(3, name="mint", desc="Mint account")]
+    #[account(4, writable, name="metadata", desc="Metadata account")]
+    #[account(5, name="edition", desc="Edition account")]
+    #[account(6, name="token_metadata_program", desc = "The token metadata program")]
+    #[account(7, name="system_program", desc="System program")]
+    #[account(8, name="sysvar_instructions", desc="System program")]
+    #[account(9, name="spl_token_program", desc="SPL Token Program")]
+    Unlock(UnlockArgs),
+
+    /// Locks a (non-programmable) token inplace via Token Metadata CPI
+    #[account(0, name="delegate", desc="Delegate PDA")]
+    #[account(1, signer, name="token_owner", desc="Token owner")]
+    #[account(2, writable, name="token", desc="Token account")]
+    #[account(3, name="mint", desc="Mint account")]
+    #[account(4, writable, name="metadata", desc="Metadata account")]
+    #[account(5, name="edition", desc="Edition account")]
+    #[account(6, writable, name="token_record", desc="Token record account")]
+    #[account(7, name="token_metadata_program", desc = "The token metadata program")]
+    #[account(8, name="system_program", desc="System program")]
+    #[account(9, name="sysvar_instructions", desc="System program")]
+    #[account(10, name="spl_token_program", desc="SPL Token Program")]
+    ProgrammableLock(LockArgs),
+
+    /// Unlocks a (non-programmable) token inplace via Token Metadata CPI
+    #[account(0, name="delegate", desc="Delegate PDA")]
+    #[account(1, signer, name="token_owner", desc="Token owner")]
+    #[account(2, writable, name="token", desc="Token account")]
+    #[account(3, name="mint", desc="Mint account")]
+    #[account(4, writable, name="metadata", desc="Metadata account")]
+    #[account(5, name="edition", desc="Edition account")]
+    #[account(6, writable, name="token_record", desc="Token record account")]
+    #[account(7, name="token_metadata_program", desc = "The token metadata program")]
+    #[account(8, name="system_program", desc="System program")]
+    #[account(9, name="sysvar_instructions", desc="System program")]
+    #[account(10, name="spl_token_program", desc="SPL Token Program")]
+    ProgrammableUnlock(UnlockArgs),
 }
 
 pub fn init(authority: Pubkey, rooster_pda: Pubkey) -> Instruction {
@@ -144,5 +210,133 @@ pub fn delegate(
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
         ],
         data: RoosterCommand::Delegate(args).try_to_vec().unwrap(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn lock(
+    authority: Pubkey,
+    token_owner: Pubkey,
+    token: Pubkey,
+    mint: Pubkey,
+    metadata: Pubkey,
+    edition: Pubkey,
+    args: LockArgs,
+) -> Instruction {
+    Instruction {
+        program_id: crate::ID,
+        accounts: vec![
+            AccountMeta::new(authority, false),
+            AccountMeta::new(token_owner, true),
+            AccountMeta::new(token, false),
+            AccountMeta::new_readonly(mint, false),
+            AccountMeta::new(metadata, false),
+            AccountMeta::new_readonly(edition, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(solana_program::system_program::id(), false),
+            AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
+            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+        ],
+        data: RoosterCommand::Lock(args).try_to_vec().unwrap(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn unlock(
+    authority: Pubkey,
+    token_owner: Pubkey,
+    token: Pubkey,
+    mint: Pubkey,
+    metadata: Pubkey,
+    edition: Pubkey,
+    args: UnlockArgs,
+) -> Instruction {
+    Instruction {
+        program_id: crate::ID,
+        accounts: vec![
+            AccountMeta::new(authority, false),
+            AccountMeta::new(token_owner, true),
+            AccountMeta::new(token, false),
+            AccountMeta::new_readonly(mint, false),
+            AccountMeta::new(metadata, false),
+            AccountMeta::new_readonly(edition, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(solana_program::system_program::id(), false),
+            AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
+            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+        ],
+        data: RoosterCommand::Unlock(args).try_to_vec().unwrap(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn programmable_lock(
+    authority: Pubkey,
+    token_owner: Pubkey,
+    token: Pubkey,
+    mint: Pubkey,
+    metadata: Pubkey,
+    edition: Pubkey,
+    args: LockArgs,
+) -> Instruction {
+    let (token_record, _) = find_token_record_account(&mint, &token_owner);
+
+    Instruction {
+        program_id: crate::ID,
+        accounts: vec![
+            AccountMeta::new(authority, false),
+            AccountMeta::new(token_owner, true),
+            AccountMeta::new(token, false),
+            AccountMeta::new_readonly(mint, false),
+            AccountMeta::new(metadata, false),
+            AccountMeta::new_readonly(edition, false),
+            AccountMeta::new(token_record, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(solana_program::system_program::id(), false),
+            AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
+            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+        ],
+        data: RoosterCommand::ProgrammableLock(args).try_to_vec().unwrap(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn programmable_unlock(
+    authority: Pubkey,
+    token_owner: Pubkey,
+    token: Pubkey,
+    mint: Pubkey,
+    metadata: Pubkey,
+    edition: Pubkey,
+    args: UnlockArgs,
+) -> Instruction {
+    let (token_record, _) = find_token_record_account(&mint, &token_owner);
+
+    Instruction {
+        program_id: crate::ID,
+        accounts: vec![
+            AccountMeta::new(authority, false),
+            AccountMeta::new(token_owner, true),
+            AccountMeta::new(token, false),
+            AccountMeta::new_readonly(mint, false),
+            AccountMeta::new(metadata, false),
+            AccountMeta::new_readonly(edition, false),
+            AccountMeta::new(token_record, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(solana_program::system_program::id(), false),
+            AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
+            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+        ],
+        data: RoosterCommand::ProgrammableUnlock(args)
+            .try_to_vec()
+            .unwrap(),
     }
 }

@@ -22,8 +22,7 @@ pub mod pda;
 pub mod processor;
 pub mod state;
 
-pub use mpl_token_metadata::processor::AuthorizationData;
-pub use mpl_token_metadata::state::TokenDelegateRole;
+pub use mpl_token_metadata::{processor::AuthorizationData, state::TokenDelegateRole};
 
 solana_program::declare_id!("Roostrnex2Z9Y2XZC49sFAdZARP8E4iFpEnZC5QJWdz");
 
