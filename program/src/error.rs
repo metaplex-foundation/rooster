@@ -17,9 +17,9 @@ pub enum Crows {
     TransferBuilderFailed,
     #[error("The 🐓 crows: Delegate builder failed")]
     DelegateBuilderFailed,
-    #[error("The 🐓 crows: Delegate builder failed")]
+    #[error("The 🐓 crows: Lock builder failed")]
     LockBuilderFailed,
-    #[error("The 🐓 crows: Delegate builder failed")]
+    #[error("The 🐓 crows: Unlock builder failed")]
     UnlockBuilderFailed,
 }
 
