@@ -1,9 +1,9 @@
-use mpl_token_metadata::instruction::builders::DelegateBuilder;
-use solana_program::program::invoke_signed;
+use mpl_token_metadata::instruction::builders::{DelegateBuilder, LockBuilder, UnlockBuilder};
+use solana_program::program::{invoke, invoke_signed};
 
 use crate::{
     assertions::assert_rooster_pda,
-    instruction::{DelegateArgs, WithdrawArgs},
+    instruction::{DelegateArgs, LockArgs, UnlockArgs, WithdrawArgs},
     state::Rooster,
 };
 
@@ -21,6 +21,12 @@ impl Processor {
             RoosterCommand::Init => init(program_id, accounts),
             RoosterCommand::Withdraw(args) => withdraw(program_id, accounts, args),
             RoosterCommand::Delegate(args) => delegate(program_id, accounts, args),
+            RoosterCommand::Lock(args) => lock(program_id, accounts, args),
+            RoosterCommand::Unlock(args) => unlock(program_id, accounts, args),
+            RoosterCommand::ProgrammableLock(args) => programmable_lock(program_id, accounts, args),
+            RoosterCommand::ProgrammableUnlock(args) => {
+                programmable_unlock(program_id, accounts, args)
+            }
         }
     }
 }
@@ -224,4 +230,328 @@ pub fn delegate(
     invoke_signed(&instruction, &account_infos, &[signer_seeds]).unwrap();
 
     Ok(())
+}
+
+pub fn lock(_program_id: &Pubkey, accounts: &[AccountInfo], args: LockArgs) -> ProgramResult {
+    msg!("Rooster: Lock");
+    let LockArgs { amount, bump } = args;
+
+    let account_iter = &mut accounts.iter();
+    let authority_info = next_account_info(account_iter)?;
+    let token_owner_info = next_account_info(account_iter)?;
+    let token_info = next_account_info(account_iter)?;
+    let mint_info = next_account_info(account_iter)?;
+    let metadata_info = next_account_info(account_iter)?;
+    let edition_info = next_account_info(account_iter)?;
+    let token_metadata_program_info = next_account_info(account_iter)?;
+    let system_program_info = next_account_info(account_iter)?;
+    let sysvar_instructions_info = next_account_info(account_iter)?;
+    let spl_token_program_info = next_account_info(account_iter)?;
+
+    let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
+
+    // creates a delegate to lock the token
+
+    let delegate_args = mpl_token_metadata::instruction::DelegateArgs::UtilityV1 {
+        amount,
+        authorization_data: None,
+    };
+
+    let build_result = DelegateBuilder::new()
+        .approver(*token_owner_info.key)
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .master_edition(*edition_info.key)
+        .payer(*token_owner_info.key)
+        .build(delegate_args);
+
+    let instruction = match build_result {
+        Ok(delegate) => delegate.instruction(),
+        Err(err) => {
+            msg!("Error building lock instruction: {:?}", err);
+            return Err(Crows::DelegateBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        token_owner_info.clone(),
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke(&instruction, &account_infos).unwrap();
+
+    // locks the token
+
+    let lock_args = mpl_token_metadata::instruction::LockArgs::V1 {
+        authorization_data: None,
+    };
+
+    let build_result = LockBuilder::new()
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .edition(*edition_info.key)
+        .payer(*token_owner_info.key)
+        .build(lock_args);
+
+    let instruction = match build_result {
+        Ok(lock) => lock.instruction(),
+        Err(err) => {
+            msg!("Error building lock instruction: {:?}", err);
+            return Err(Crows::LockBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_owner_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke_signed(&instruction, &account_infos, &[signer_seeds])
+}
+
+pub fn unlock(_program_id: &Pubkey, accounts: &[AccountInfo], args: UnlockArgs) -> ProgramResult {
+    msg!("Rooster: Unlock");
+    let UnlockArgs { bump } = args;
+
+    let account_iter = &mut accounts.iter();
+    let authority_info = next_account_info(account_iter)?;
+    let token_owner_info = next_account_info(account_iter)?;
+    let token_info = next_account_info(account_iter)?;
+    let mint_info = next_account_info(account_iter)?;
+    let metadata_info = next_account_info(account_iter)?;
+    let edition_info = next_account_info(account_iter)?;
+    let token_metadata_program_info = next_account_info(account_iter)?;
+    let system_program_info = next_account_info(account_iter)?;
+    let sysvar_instructions_info = next_account_info(account_iter)?;
+    let spl_token_program_info = next_account_info(account_iter)?;
+
+    let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
+
+    // unlocks the token (must have been locked by rooster)
+
+    let unlock_args = mpl_token_metadata::instruction::UnlockArgs::V1 {
+        authorization_data: None,
+    };
+
+    let build_result = UnlockBuilder::new()
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .edition(*edition_info.key)
+        .payer(*token_owner_info.key)
+        .build(unlock_args);
+
+    let instruction = match build_result {
+        Ok(lock) => lock.instruction(),
+        Err(err) => {
+            msg!("Error building unlock instruction: {:?}", err);
+            return Err(Crows::UnlockBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_owner_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke_signed(&instruction, &account_infos, &[signer_seeds])
+}
+
+pub fn programmable_lock(
+    _program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    args: LockArgs,
+) -> ProgramResult {
+    msg!("Rooster: Programmable Lock");
+    let LockArgs { amount, bump } = args;
+
+    let account_iter = &mut accounts.iter();
+    let authority_info = next_account_info(account_iter)?;
+    let token_owner_info = next_account_info(account_iter)?;
+    let token_info = next_account_info(account_iter)?;
+    let mint_info = next_account_info(account_iter)?;
+    let metadata_info = next_account_info(account_iter)?;
+    let edition_info = next_account_info(account_iter)?;
+    let token_record_info = next_account_info(account_iter)?;
+    let token_metadata_program_info = next_account_info(account_iter)?;
+    let system_program_info = next_account_info(account_iter)?;
+    let sysvar_instructions_info = next_account_info(account_iter)?;
+    let spl_token_program_info = next_account_info(account_iter)?;
+
+    let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
+
+    // creates a delegate to lock the token
+
+    let delegate_args = mpl_token_metadata::instruction::DelegateArgs::UtilityV1 {
+        amount,
+        authorization_data: None,
+    };
+
+    let build_result = DelegateBuilder::new()
+        .approver(*token_owner_info.key)
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .master_edition(*edition_info.key)
+        .token_record(*token_record_info.key)
+        .payer(*token_owner_info.key)
+        .build(delegate_args);
+
+    let instruction = match build_result {
+        Ok(delegate) => delegate.instruction(),
+        Err(err) => {
+            msg!("Error building programmable lock instruction: {:?}", err);
+            return Err(Crows::DelegateBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        token_owner_info.clone(),
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_record_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke(&instruction, &account_infos).unwrap();
+
+    // locks the token
+
+    let lock_args = mpl_token_metadata::instruction::LockArgs::V1 {
+        authorization_data: None,
+    };
+
+    let build_result = LockBuilder::new()
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .edition(*edition_info.key)
+        .token_record(*token_record_info.key)
+        .payer(*token_owner_info.key)
+        .build(lock_args);
+
+    let instruction = match build_result {
+        Ok(lock) => lock.instruction(),
+        Err(err) => {
+            msg!("Error building programmable lock instruction: {:?}", err);
+            return Err(Crows::LockBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_owner_info.clone(),
+        token_record_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke_signed(&instruction, &account_infos, &[signer_seeds])
+}
+
+pub fn programmable_unlock(
+    _program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    args: UnlockArgs,
+) -> ProgramResult {
+    msg!("Rooster: Programmable Unlock");
+    let UnlockArgs { bump } = args;
+
+    let account_iter = &mut accounts.iter();
+    let authority_info = next_account_info(account_iter)?;
+    let token_owner_info = next_account_info(account_iter)?;
+    let token_info = next_account_info(account_iter)?;
+    let mint_info = next_account_info(account_iter)?;
+    let metadata_info = next_account_info(account_iter)?;
+    let edition_info = next_account_info(account_iter)?;
+    let token_record_info = next_account_info(account_iter)?;
+    let token_metadata_program_info = next_account_info(account_iter)?;
+    let system_program_info = next_account_info(account_iter)?;
+    let sysvar_instructions_info = next_account_info(account_iter)?;
+    let spl_token_program_info = next_account_info(account_iter)?;
+
+    let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
+
+    // unlocks the token (the token must the locked by rooster)
+
+    let unlock_args = mpl_token_metadata::instruction::UnlockArgs::V1 {
+        authorization_data: None,
+    };
+
+    let build_result = UnlockBuilder::new()
+        .delegate(*authority_info.key)
+        .token(*token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .edition(*edition_info.key)
+        .token_record(*token_record_info.key)
+        .payer(*token_owner_info.key)
+        .build(unlock_args);
+
+    let instruction = match build_result {
+        Ok(unlock) => unlock.instruction(),
+        Err(err) => {
+            msg!("Error building programmable unlock instruction: {:?}", err);
+            return Err(Crows::UnlockBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        authority_info.clone(),
+        token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        token_owner_info.clone(),
+        token_record_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+    ];
+
+    invoke_signed(&instruction, &account_infos, &[signer_seeds])
 }
