@@ -194,7 +194,7 @@ pub fn delegate(
 
     let mut builder = DelegateBuilder::new();
     builder
-        .approver(*rooster_pda_info.key)
+        .authority(*rooster_pda_info.key)
         .delegate(*delegate_info.key)
         .token_record(*token_record_info.key)
         .token(*token_info.key)
@@ -258,7 +258,7 @@ pub fn lock(_program_id: &Pubkey, accounts: &[AccountInfo], args: LockArgs) -> P
     };
 
     let build_result = DelegateBuilder::new()
-        .approver(*token_owner_info.key)
+        .authority(*token_owner_info.key)
         .delegate(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
@@ -297,7 +297,7 @@ pub fn lock(_program_id: &Pubkey, accounts: &[AccountInfo], args: LockArgs) -> P
     };
 
     let build_result = LockBuilder::new()
-        .delegate(*authority_info.key)
+        .authority(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
@@ -354,7 +354,7 @@ pub fn unlock(_program_id: &Pubkey, accounts: &[AccountInfo], args: UnlockArgs) 
     };
 
     let build_result = UnlockBuilder::new()
-        .delegate(*authority_info.key)
+        .authority(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
@@ -417,7 +417,7 @@ pub fn programmable_lock(
     };
 
     let build_result = DelegateBuilder::new()
-        .approver(*token_owner_info.key)
+        .authority(*token_owner_info.key)
         .delegate(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
@@ -458,7 +458,7 @@ pub fn programmable_lock(
     };
 
     let build_result = LockBuilder::new()
-        .delegate(*authority_info.key)
+        .authority(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
@@ -522,7 +522,7 @@ pub fn programmable_unlock(
     };
 
     let build_result = UnlockBuilder::new()
-        .delegate(*authority_info.key)
+        .authority(*authority_info.key)
         .token(*token_info.key)
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
