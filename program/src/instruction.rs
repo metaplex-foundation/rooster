@@ -71,6 +71,8 @@ pub enum RoosterCommand {
     #[account(8, name="system_program", desc = "The system program")]
     #[account(9, name="sysvar_instructions", desc = "The sysvar instructions")]
     #[account(10, name="spl_token_program", desc = "The token program")]
+    #[account(11, name="authorization_rules_program", desc="Token Authorization Rules Program")]
+    #[account(12, name="authorization_rules", desc="Token Authorization Rules account")]
     Delegate(DelegateArgs),
     
     /// Locks a (non-programmable) token inplace via Token Metadata CPI
@@ -193,6 +195,7 @@ pub fn delegate(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
+    authorization_rules: Option<Pubkey>,
     args: DelegateArgs,
 ) -> Instruction {
     let (token_record, _bump) = find_token_record_account(&mint, &rooster_pda);
@@ -212,6 +215,10 @@ pub fn delegate(
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
             AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(
+                authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
+                false,
+            ),
         ],
         data: RoosterCommand::Delegate(args).try_to_vec().unwrap(),
     }

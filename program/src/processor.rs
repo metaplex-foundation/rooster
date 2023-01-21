@@ -184,6 +184,7 @@ pub fn delegate(
     let sysvar_instructions_info = next_account_info(account_iter)?;
     let spl_token_program_info = next_account_info(account_iter)?;
     let _mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
+    let rule_set_info = next_account_info(account_iter)?;
 
     let signer_seeds = &[b"rooster", authority.as_ref(), &[bump]];
 
@@ -201,6 +202,7 @@ pub fn delegate(
         .mint(*mint_info.key)
         .metadata(*metadata_info.key)
         .master_edition(*edition_info.key)
+        .authorization_rules(*rule_set_info.key)
         .payer(*delegate_info.key);
 
     let build_result = builder.build(delegate_args);
@@ -225,6 +227,7 @@ pub fn delegate(
         system_program_info.clone(),
         sysvar_instructions_info.clone(),
         spl_token_program_info.clone(),
+        rule_set_info.clone(),
     ];
 
     invoke_signed(&instruction, &account_infos, &[signer_seeds]).unwrap();
