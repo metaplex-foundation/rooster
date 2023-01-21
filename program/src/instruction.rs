@@ -111,6 +111,8 @@ pub enum RoosterCommand {
     #[account(8, name="system_program", desc="System program")]
     #[account(9, name="sysvar_instructions", desc="System program")]
     #[account(10, name="spl_token_program", desc="SPL Token Program")]
+    #[account(11, name="authorization_rules_program", desc="Token Authorization Rules Program")]
+    #[account(12, name="authorization_rules", desc="Token Authorization Rules account")]
     ProgrammableLock(LockArgs),
 
     /// Unlocks a (non-programmable) token inplace via Token Metadata CPI
@@ -125,6 +127,8 @@ pub enum RoosterCommand {
     #[account(8, name="system_program", desc="System program")]
     #[account(9, name="sysvar_instructions", desc="System program")]
     #[account(10, name="spl_token_program", desc="SPL Token Program")]
+    #[account(11, name="authorization_rules_program", desc="Token Authorization Rules Program")]
+    #[account(12, name="authorization_rules", desc="Token Authorization Rules account")]
     ProgrammableUnlock(UnlockArgs),
 }
 

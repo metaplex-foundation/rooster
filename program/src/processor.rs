@@ -406,6 +406,8 @@ pub fn programmable_lock(
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
     let spl_token_program_info = next_account_info(account_iter)?;
+    let _mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
+    let rule_set_info = next_account_info(account_iter)?;
 
     let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
 
@@ -424,6 +426,7 @@ pub fn programmable_lock(
         .metadata(*metadata_info.key)
         .master_edition(*edition_info.key)
         .token_record(*token_record_info.key)
+        .authorization_rules(*rule_set_info.key)
         .payer(*token_owner_info.key)
         .build(delegate_args);
 
@@ -447,6 +450,7 @@ pub fn programmable_lock(
         system_program_info.clone(),
         sysvar_instructions_info.clone(),
         spl_token_program_info.clone(),
+        rule_set_info.clone(),
     ];
 
     invoke(&instruction, &account_infos).unwrap();
@@ -512,6 +516,8 @@ pub fn programmable_unlock(
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
     let spl_token_program_info = next_account_info(account_iter)?;
+    let _mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
+    let rule_set_info = next_account_info(account_iter)?;
 
     let signer_seeds = &[b"rooster", token_owner_info.key.as_ref(), &[bump]];
 
@@ -528,6 +534,7 @@ pub fn programmable_unlock(
         .metadata(*metadata_info.key)
         .edition(*edition_info.key)
         .token_record(*token_record_info.key)
+        .authorization_rules(*rule_set_info.key)
         .payer(*token_owner_info.key)
         .build(unlock_args);
 
