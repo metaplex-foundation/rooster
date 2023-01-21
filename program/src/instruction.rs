@@ -285,6 +285,7 @@ pub fn programmable_lock(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
+    authorization_rules: Option<Pubkey>,
     args: LockArgs,
 ) -> Instruction {
     let (token_record, _) = find_token_record_account(&mint, &token_owner);
@@ -304,7 +305,10 @@ pub fn programmable_lock(
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
             AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
-            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(
+                authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
+                false,
+            ),
         ],
         data: RoosterCommand::ProgrammableLock(args).try_to_vec().unwrap(),
     }
@@ -318,6 +322,7 @@ pub fn programmable_unlock(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
+    authorization_rules: Option<Pubkey>,
     args: UnlockArgs,
 ) -> Instruction {
     let (token_record, _) = find_token_record_account(&mint, &token_owner);
@@ -337,7 +342,10 @@ pub fn programmable_unlock(
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
             AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
-            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(
+                authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
+                false,
+            ),
         ],
         data: RoosterCommand::ProgrammableUnlock(args)
             .try_to_vec()
