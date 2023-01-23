@@ -159,8 +159,8 @@ pub fn withdraw(
     rule_set: Pubkey,
     args: WithdrawArgs,
 ) -> Instruction {
-    let (owner_token_record, _) = find_token_record_account(&mint, &rooster_pda);
-    let (destination_token_record, _) = find_token_record_account(&mint, &destination_owner);
+    let (owner_token_record, _) = find_token_record_account(&mint, &token);
+    let (destination_token_record, _) = find_token_record_account(&mint, &destination);
 
     Instruction {
         program_id: crate::ID,
@@ -198,7 +198,7 @@ pub fn delegate(
     authorization_rules: Option<Pubkey>,
     args: DelegateArgs,
 ) -> Instruction {
-    let (token_record, _bump) = find_token_record_account(&mint, &rooster_pda);
+    let (token_record, _bump) = find_token_record_account(&mint, &token);
 
     Instruction {
         program_id: crate::ID,
@@ -295,7 +295,7 @@ pub fn programmable_lock(
     authorization_rules: Option<Pubkey>,
     args: LockArgs,
 ) -> Instruction {
-    let (token_record, _) = find_token_record_account(&mint, &token_owner);
+    let (token_record, _) = find_token_record_account(&mint, &token);
 
     Instruction {
         program_id: crate::ID,
@@ -332,7 +332,7 @@ pub fn programmable_unlock(
     authorization_rules: Option<Pubkey>,
     args: UnlockArgs,
 ) -> Instruction {
-    let (token_record, _) = find_token_record_account(&mint, &token_owner);
+    let (token_record, _) = find_token_record_account(&mint, &token);
 
     Instruction {
         program_id: crate::ID,
