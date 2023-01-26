@@ -49,6 +49,8 @@ jobs:
         run: |
           solana program dump -u devnet metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s ./target/deploy/mpl_token_metadata.so
 
+      # Build program to create target folder.
+      - uses: ./.github/actions/build-program
 
       # Run test
       - name: test-program
