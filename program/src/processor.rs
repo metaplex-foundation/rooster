@@ -117,6 +117,7 @@ pub fn withdraw(
         .owner_token_record(*owner_token_record_info.key)
         .destination_token_record(*destination_token_record_info.key)
         .authorization_rules(*rule_set_info.key)
+        .authorization_rules_program(*mpl_token_auth_rules_program_info.key)
         .payer(*authority_info.key);
 
     msg!("building transfer instruction");
@@ -183,7 +184,7 @@ pub fn delegate(
     let system_program_info = next_account_info(account_iter)?;
     let sysvar_instructions_info = next_account_info(account_iter)?;
     let spl_token_program_info = next_account_info(account_iter)?;
-    let _mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
+    let mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
     let rule_set_info = next_account_info(account_iter)?;
 
     let signer_seeds = &[b"rooster", authority.as_ref(), &[bump]];
@@ -203,6 +204,8 @@ pub fn delegate(
         .metadata(*metadata_info.key)
         .master_edition(*edition_info.key)
         .authorization_rules(*rule_set_info.key)
+        .authorization_rules_program(*mpl_token_auth_rules_program_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .payer(*delegate_info.key);
 
     let build_result = builder.build(delegate_args);
