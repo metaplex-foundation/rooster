@@ -1882,31 +1882,32 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-auth-rules"
-version = "0.2.3"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eecef0c554b03173987657ee7f0084d58fa1166d8d6b2dc4ddc8a3d5e3affd1e"
+checksum = "a14e1ac5350734fd07f17d7eab733d27b7b45ca963642c565ec34ab015d9ceda"
 dependencies = [
  "borsh",
- "mpl-token-metadata-context-derive 0.0.1",
+ "mpl-token-metadata-context-derive",
  "num-derive",
  "num-traits",
  "rmp-serde",
  "serde",
  "shank 0.0.11",
  "solana-program",
+ "solana-zk-token-sdk",
  "thiserror",
 ]
 
 [[package]]
 name = "mpl-token-metadata"
-version = "1.7.0-alpha.3"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#23e80e52c247ca08b502b7192e2c11263447b628"
+version = "1.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5accdfde5c18465c65bd664169845a185f8a00d973d5c15396fef858dd2e52d9"
 dependencies = [
  "arrayref",
  "borsh",
  "mpl-token-auth-rules",
- "mpl-token-metadata-context-derive 0.1.0",
- "mpl-token-vault",
+ "mpl-token-metadata-context-derive",
  "mpl-utils 0.0.6",
  "num-derive",
  "num-traits",
@@ -1919,35 +1920,12 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-metadata-context-derive"
-version = "0.0.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4d72db771ffb888fd22278b58cd91d50f2fc47c9705acb9f04c00b4ecaa80fc"
+checksum = "12989bc45715b0ee91944855130131479f9c772e198a910c3eb0ea327d5bffc3"
 dependencies = [
  "quote 1.0.23",
  "syn 1.0.107",
-]
-
-[[package]]
-name = "mpl-token-metadata-context-derive"
-version = "0.1.0"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#23e80e52c247ca08b502b7192e2c11263447b628"
-dependencies = [
- "quote 1.0.23",
- "syn 1.0.107",
-]
-
-[[package]]
-name = "mpl-token-vault"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ade4ef15bc06a6033076c4ff28cba9b42521df5ec61211d6f419415ace2746a"
-dependencies = [
- "borsh",
- "num-derive",
- "num-traits",
- "solana-program",
- "spl-token",
- "thiserror",
 ]
 
 [[package]]
@@ -1965,7 +1943,8 @@ dependencies = [
 [[package]]
 name = "mpl-utils"
 version = "0.0.6"
-source = "git+https://github.com/metaplex-foundation/metaplex-program-library?branch=feat/programmable-asset#23e80e52c247ca08b502b7192e2c11263447b628"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d6195ce98b92f1d0ea06d0cc9b2392d81673e02b8fb063589926fa73ee6b071a"
 dependencies = [
  "arrayref",
  "borsh",
