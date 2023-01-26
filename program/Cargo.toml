@@ -1,9 +1,13 @@
 [package]
-name = "rooster"
+name = "mpl-rooster"
 version = "0.1.0"
 edition = "2021"
-license = "Apache-2.0"
-publish = false
+authors = ["Metaplex Developers <dev@metaplex.com>"]
+description = "Rooster: a simple program to test authorization rules for pNFTs."
+license-file = "../LICENSE"
+keywords = ["nft", "metaplex", "solana", "blockchain"]
+repository = "https://github.com/metaplex-foundation/rooster"
+readme = "../README.md"
 
 [dependencies]
 borsh = "0.9.3"
@@ -28,3 +32,5 @@ solana-logger = "1.14"
 
 [lib]
 crate-type = ["cdylib", "lib"]
+name = "rooster"
+

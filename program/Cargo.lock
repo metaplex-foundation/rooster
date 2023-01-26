@@ -1881,6 +1881,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "mpl-rooster"
+version = "0.1.0"
+dependencies = [
+ "assert_matches",
+ "borsh",
+ "mpl-token-metadata",
+ "mpl-utils 0.0.5",
+ "num-derive",
+ "num-traits",
+ "shank 0.0.10",
+ "solana-logger",
+ "solana-program",
+ "solana-program-test",
+ "solana-sdk",
+ "thiserror",
+]
+
+[[package]]
 name = "mpl-token-auth-rules"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2741,24 +2759,6 @@ dependencies = [
  "byteorder",
  "rmp",
  "serde",
-]
-
-[[package]]
-name = "rooster"
-version = "0.1.0"
-dependencies = [
- "assert_matches",
- "borsh",
- "mpl-token-metadata",
- "mpl-utils 0.0.5",
- "num-derive",
- "num-traits",
- "shank 0.0.10",
- "solana-logger",
- "solana-program",
- "solana-program-test",
- "solana-sdk",
- "thiserror",
 ]
 
 [[package]]
