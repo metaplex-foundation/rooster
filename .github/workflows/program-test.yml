@@ -9,7 +9,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  SOLANA_VERSION: 1.10.9
+  SOLANA_VERSION: 1.14.13
   RUST_TOOLCHAIN: stable
 
 jobs:
@@ -29,6 +29,9 @@ jobs:
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
 
+      # Build program to create target folder.
+      - uses: ./.github/actions/build-program
+
       # Restore Cache from previous build/test
       - uses: actions/cache@v2
         with:
@@ -42,6 +45,13 @@ jobs:
             ${{ env.cache_id }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{
             env.RUSTC_HASH }}
 
+
+      # Get test program
+      - name: get-test-programs
+        working-directory: ./program
+        run: |
+          solana program dump -u devnet metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s ./target/deploy/mpl_token_metadata.so
+
       # Run test
       - name: test-program
         id: run_test
@@ -49,4 +59,4 @@ jobs:
         run: |
           cargo +${{ env.RUST_TOOLCHAIN }} test -- --nocapture --test-threads 1
           cargo +${{ env.RUST_TOOLCHAIN }} test-bpf --version
-          cargo +${{ env.RUST_TOOLCHAIN }} test-bpf --bpf-out-dir ../../target/deploy/ -- --nocapture --test-threads 1
+          cargo +${{ env.RUST_TOOLCHAIN }} test-bpf --bpf-out-dir ./target/deploy/ -- --nocapture --test-threads 1

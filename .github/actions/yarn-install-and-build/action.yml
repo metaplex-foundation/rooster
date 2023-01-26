@@ -23,7 +23,7 @@ runs:
         yarn install
         echo 'Build SDK: yarn build'
         yarn build
-      working-directory: ./js
+      working-directory: ./packages/sd
       shell: bash
 
     - name: Install modules
