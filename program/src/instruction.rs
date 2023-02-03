@@ -1,5 +1,8 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use mpl_token_metadata::{pda::find_token_record_account, processor::AuthorizationData};
+use mpl_token_metadata::{
+    pda::{find_master_edition_account, find_metadata_account, find_token_record_account},
+    processor::AuthorizationData,
+};
 use shank::ShankInstruction;
 
 use super::*;
@@ -29,6 +32,12 @@ pub struct LockArgs {
 #[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
 pub struct UnlockArgs {
     pub bump: u8,
+}
+
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug, Clone)]
+pub struct DelegateTransferArgs {
+    pub amount: u64,
+    pub auth_data: AuthorizationData,
 }
 
 #[derive(Debug, Clone, ShankInstruction, BorshSerialize, BorshDeserialize)]
@@ -132,6 +141,27 @@ pub enum RoosterCommand {
     #[account(11, name="authorization_rules_program", desc="Token Authorization Rules Program")]
     #[account(12, name="authorization_rules", desc="Token Authorization Rules account")]
     ProgrammableUnlock(UnlockArgs),
+
+    /// Delegate transfer
+    #[account(0, writable, signer, name="authority", desc="Account owner")]
+    #[account(1, writable, name="rooster_pda", desc = "Rooster PDA account as a delegate")]
+    #[account(2, writable, name="source_owner", desc = "Owner of the source token account")]
+    #[account(3, writable, name="source_token", desc = "Source token account")]
+    #[account(4, name="destination_owner", desc = "Owner of the destination token account")]
+    #[account(5, writable, name="destination_token", desc = "Destination token account")]
+    #[account(6, name="mint", desc = "Token mint")]
+    #[account(7, writable, name="metadata", desc = "Token metadata account")]
+    #[account(8, name="edition", desc = "Token edition account")]
+    #[account(9, name="source_token_record", desc = "Source Token record account")]
+    #[account(10, name="dest_token_record", desc = "Destination Token record account")]
+    #[account(11, name="token_metadata_program", desc = "The token metadata program")]
+    #[account(12, name="system_program", desc = "The system program")]
+    #[account(13, name="sysvar_instructions", desc = "The sysvar instructions")]
+    #[account(14, name="spl_token_program", desc = "The token program")]
+    #[account(15, name="spl_ata_program", desc = "The spl ata program")]
+    #[account(16, name="authorization_rules_program", desc = "The authorization rules program")]
+    #[account(17, name="authorization_rules", desc = "The authorization rules PDA account")]
+    DelegateTransfer(DelegateTransferArgs),
 }
 
 pub fn init(authority: Pubkey, rooster_pda: Pubkey) -> Instruction {
@@ -357,5 +387,48 @@ pub fn programmable_unlock(
         data: RoosterCommand::ProgrammableUnlock(args)
             .try_to_vec()
             .unwrap(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn delegate_transfer(
+    authority: Pubkey,
+    rooster_pda: Pubkey,
+    source_owner: Pubkey,
+    source_token: Pubkey,
+    destination_owner: Pubkey,
+    destination_token: Pubkey,
+    mint: Pubkey,
+    rule_set: Pubkey,
+    args: DelegateTransferArgs,
+) -> Instruction {
+    let (metadata, _) = find_metadata_account(&mint);
+    let (edition, _) = find_master_edition_account(&mint);
+    let (source_token_record, _) = find_token_record_account(&mint, &source_token);
+    let (destination_token_record, _) = find_token_record_account(&mint, &destination_token);
+
+    Instruction {
+        program_id: crate::ID,
+        accounts: vec![
+            AccountMeta::new(authority, true),
+            AccountMeta::new(rooster_pda, false),
+            AccountMeta::new(source_owner, false),
+            AccountMeta::new(source_token, false),
+            AccountMeta::new_readonly(destination_owner, false),
+            AccountMeta::new(destination_token, false),
+            AccountMeta::new(mint, false),
+            AccountMeta::new(metadata, false),
+            AccountMeta::new(edition, false),
+            AccountMeta::new(source_token_record, false),
+            AccountMeta::new(destination_token_record, false),
+            AccountMeta::new_readonly(mpl_token_metadata::ID, false),
+            AccountMeta::new_readonly(solana_program::system_program::id(), false),
+            AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
+            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(SPL_ATA_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
+            AccountMeta::new_readonly(rule_set, false),
+        ],
+        data: RoosterCommand::DelegateTransfer(args).try_to_vec().unwrap(),
     }
 }
