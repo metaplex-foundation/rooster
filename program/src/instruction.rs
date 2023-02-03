@@ -390,6 +390,7 @@ pub fn programmable_unlock(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn delegate_transfer(
     authority: Pubkey,
     rooster_pda: Pubkey,
