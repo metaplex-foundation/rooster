@@ -3,7 +3,7 @@ use solana_program::program::{invoke, invoke_signed};
 
 use crate::{
     assertions::assert_rooster_pda,
-    instruction::{DelegateArgs, LockArgs, UnlockArgs, WithdrawArgs},
+    instruction::{DelegateArgs, DelegateTransferArgs, LockArgs, UnlockArgs, WithdrawArgs},
     state::Rooster,
 };
 
@@ -27,6 +27,7 @@ impl Processor {
             RoosterCommand::ProgrammableUnlock(args) => {
                 programmable_unlock(program_id, accounts, args)
             }
+            RoosterCommand::DelegateTransfer(args) => delegate_transfer(program_id, accounts, args),
         }
     }
 }
@@ -567,4 +568,95 @@ pub fn programmable_unlock(
     ];
 
     invoke_signed(&instruction, &account_infos, &[signer_seeds])
+}
+
+pub fn delegate_transfer(
+    _program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    args: DelegateTransferArgs,
+) -> ProgramResult {
+    let account_iter = &mut accounts.iter();
+    let authority_info = next_account_info(account_iter)?;
+    let rooster_pda_info = next_account_info(account_iter)?;
+    let source_owner_info = next_account_info(account_iter)?;
+    let source_token_info = next_account_info(account_iter)?;
+    let destination_owner_info = next_account_info(account_iter)?;
+    let destination_token_info = next_account_info(account_iter)?;
+    let mint_info = next_account_info(account_iter)?;
+    let metadata_info = next_account_info(account_iter)?;
+    let edition_info = next_account_info(account_iter)?;
+    let source_token_record_info = next_account_info(account_iter)?;
+    let destination_token_record_info = next_account_info(account_iter)?;
+    let token_metadata_program_info = next_account_info(account_iter)?;
+    let system_program_info = next_account_info(account_iter)?;
+    let sysvar_instructions_info = next_account_info(account_iter)?;
+    let spl_token_program_info = next_account_info(account_iter)?;
+    let spl_ata_program_info = next_account_info(account_iter)?;
+    let mpl_token_auth_rules_program_info = next_account_info(account_iter)?;
+    let rule_set_info = next_account_info(account_iter)?;
+
+    let bump = assert_rooster_pda(rooster_pda_info, authority_info)?;
+    let signer_seeds = &[b"rooster", authority_info.key.as_ref(), &[bump]];
+
+    let transfer_args = TransferArgs::V1 {
+        authorization_data: Some(args.auth_data),
+        amount: args.amount,
+    };
+
+    msg!("setting up builder");
+    let mut builder = TransferBuilder::new();
+    builder
+        .authority(*rooster_pda_info.key)
+        .token_owner(*source_owner_info.key)
+        .token(*source_token_info.key)
+        .destination_owner(*destination_owner_info.key)
+        .destination(*destination_token_info.key)
+        .mint(*mint_info.key)
+        .metadata(*metadata_info.key)
+        .edition(*edition_info.key)
+        .owner_token_record(*source_token_record_info.key)
+        .destination_token_record(*destination_token_record_info.key)
+        .authorization_rules(*rule_set_info.key)
+        .authorization_rules_program(*mpl_token_auth_rules_program_info.key)
+        .payer(*authority_info.key);
+
+    msg!("building transfer instruction");
+    let build_result = builder.build(transfer_args);
+
+    let instruction = match build_result {
+        Ok(transfer) => {
+            msg!("transfer instruction built");
+            transfer.instruction()
+        }
+        Err(err) => {
+            msg!("Error building transfer instruction: {:?}", err);
+            return Err(Crows::TransferBuilderFailed.into());
+        }
+    };
+
+    let account_infos = [
+        rooster_pda_info.clone(),
+        source_owner_info.clone(),
+        source_token_info.clone(),
+        destination_owner_info.clone(),
+        destination_token_info.clone(),
+        mint_info.clone(),
+        metadata_info.clone(),
+        edition_info.clone(),
+        source_token_record_info.clone(),
+        destination_token_record_info.clone(),
+        rule_set_info.clone(),
+        authority_info.clone(),
+        token_metadata_program_info.clone(),
+        system_program_info.clone(),
+        sysvar_instructions_info.clone(),
+        spl_token_program_info.clone(),
+        spl_ata_program_info.clone(),
+        mpl_token_auth_rules_program_info.clone(),
+    ];
+
+    msg!("invoking transfer instruction");
+    invoke_signed(&instruction, &account_infos, &[signer_seeds]).unwrap();
+
+    Ok(())
 }
