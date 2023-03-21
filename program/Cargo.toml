@@ -11,7 +11,7 @@ readme = "../README.md"
 
 [dependencies]
 borsh = "0.9.3"
-mpl-token-metadata = { version = "1.8.0", features = ["no-entrypoint"] }
+mpl-token-metadata = { version = "1.9.1", features = ["no-entrypoint"] }
 mpl-utils = "0.0.5"
 num-derive = "0.3.3"
 num-traits = "~0.2"
