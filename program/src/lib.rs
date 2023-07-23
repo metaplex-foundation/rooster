@@ -26,7 +26,6 @@ pub use mpl_token_metadata::{processor::AuthorizationData, state::TokenDelegateR
 
 solana_program::declare_id!("Roostrnex2Z9Y2XZC49sFAdZARP8E4iFpEnZC5QJWdz");
 
-pub const SPL_TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 pub const SPL_ATA_TOKEN_PROGRAM_ID: Pubkey =
     pubkey!("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
 pub const MPL_TOKEN_AUTH_RULES_PROGRAM_ID: Pubkey =
