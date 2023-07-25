@@ -11,6 +11,6 @@ runs:
     - name: build-program
       working-directory: ./program
       run: |
-        cargo +${{ env.RUST_STABLE }} build-bpf --version
-        cargo +${{ env.RUST_STABLE }} build-bpf --bpf-out-dir target/deploy/
+        cargo +${{ env.RUST_TOOLCHAIN }} build-bpf --version
+        cargo +${{ env.RUST_TOOLCHAIN }} build-bpf --bpf-out-dir target/deploy/
       shell: bash

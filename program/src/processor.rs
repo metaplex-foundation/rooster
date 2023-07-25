@@ -119,6 +119,7 @@ pub fn withdraw(
         .destination_token_record(*destination_token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .authorization_rules_program(*mpl_token_auth_rules_program_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .payer(*authority_info.key);
 
     msg!("building transfer instruction");
@@ -272,6 +273,7 @@ pub fn lock(_program_id: &Pubkey, accounts: &[AccountInfo], args: LockArgs) -> P
         .metadata(*metadata_info.key)
         .master_edition(*edition_info.key)
         .payer(*token_owner_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .build(delegate_args);
 
     let instruction = match build_result {
@@ -367,6 +369,7 @@ pub fn unlock(_program_id: &Pubkey, accounts: &[AccountInfo], args: UnlockArgs) 
         .metadata(*metadata_info.key)
         .edition(*edition_info.key)
         .payer(*token_owner_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .build(unlock_args);
 
     let instruction = match build_result {
@@ -435,6 +438,7 @@ pub fn programmable_lock(
         .token_record(*token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .payer(*token_owner_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .build(delegate_args);
 
     let instruction = match build_result {
@@ -476,6 +480,7 @@ pub fn programmable_lock(
         .edition(*edition_info.key)
         .token_record(*token_record_info.key)
         .payer(*token_owner_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .build(lock_args);
 
     let instruction = match build_result {
@@ -543,6 +548,7 @@ pub fn programmable_unlock(
         .token_record(*token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .payer(*token_owner_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .build(unlock_args);
 
     let instruction = match build_result {
@@ -575,6 +581,8 @@ pub fn delegate_transfer(
     accounts: &[AccountInfo],
     args: DelegateTransferArgs,
 ) -> ProgramResult {
+    msg!("Rooster: DelegateTransfer");
+
     let account_iter = &mut accounts.iter();
     let authority_info = next_account_info(account_iter)?;
     let rooster_pda_info = next_account_info(account_iter)?;
@@ -618,6 +626,7 @@ pub fn delegate_transfer(
         .destination_token_record(*destination_token_record_info.key)
         .authorization_rules(*rule_set_info.key)
         .authorization_rules_program(*mpl_token_auth_rules_program_info.key)
+        .spl_token_program(*spl_token_program_info.key)
         .payer(*authority_info.key);
 
     msg!("building transfer instruction");

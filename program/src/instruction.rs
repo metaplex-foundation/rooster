@@ -187,6 +187,7 @@ pub fn withdraw(
     metadata: Pubkey,
     edition: Pubkey,
     rule_set: Pubkey,
+    spl_token_program: Pubkey,
     args: WithdrawArgs,
 ) -> Instruction {
     let (owner_token_record, _) = find_token_record_account(&mint, &token);
@@ -208,7 +209,7 @@ pub fn withdraw(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(SPL_ATA_TOKEN_PROGRAM_ID, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(rule_set, false),
@@ -226,6 +227,7 @@ pub fn delegate(
     metadata: Pubkey,
     edition: Pubkey,
     authorization_rules: Option<Pubkey>,
+    spl_token_program: Pubkey,
     args: DelegateArgs,
 ) -> Instruction {
     let (token_record, _bump) = find_token_record_account(&mint, &token);
@@ -243,7 +245,7 @@ pub fn delegate(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(
                 authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
@@ -262,6 +264,7 @@ pub fn lock(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
+    spl_token_program: Pubkey,
     args: LockArgs,
 ) -> Instruction {
     Instruction {
@@ -276,7 +279,7 @@ pub fn lock(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
         ],
@@ -292,6 +295,7 @@ pub fn unlock(
     mint: Pubkey,
     metadata: Pubkey,
     edition: Pubkey,
+    spl_token_program: Pubkey,
     args: UnlockArgs,
 ) -> Instruction {
     Instruction {
@@ -306,7 +310,7 @@ pub fn unlock(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
         ],
@@ -323,6 +327,7 @@ pub fn programmable_lock(
     metadata: Pubkey,
     edition: Pubkey,
     authorization_rules: Option<Pubkey>,
+    spl_token_program: Pubkey,
     args: LockArgs,
 ) -> Instruction {
     let (token_record, _) = find_token_record_account(&mint, &token);
@@ -340,7 +345,7 @@ pub fn programmable_lock(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(
                 authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
@@ -360,6 +365,7 @@ pub fn programmable_unlock(
     metadata: Pubkey,
     edition: Pubkey,
     authorization_rules: Option<Pubkey>,
+    spl_token_program: Pubkey,
     args: UnlockArgs,
 ) -> Instruction {
     let (token_record, _) = find_token_record_account(&mint, &token);
@@ -377,7 +383,7 @@ pub fn programmable_unlock(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(
                 authorization_rules.ok_or(mpl_token_metadata::ID).unwrap(),
@@ -400,6 +406,7 @@ pub fn delegate_transfer(
     destination_token: Pubkey,
     mint: Pubkey,
     rule_set: Pubkey,
+    spl_token_program: Pubkey,
     args: DelegateTransferArgs,
 ) -> Instruction {
     let (metadata, _) = find_metadata_account(&mint);
@@ -424,7 +431,7 @@ pub fn delegate_transfer(
             AccountMeta::new_readonly(mpl_token_metadata::ID, false),
             AccountMeta::new_readonly(solana_program::system_program::id(), false),
             AccountMeta::new_readonly(solana_program::sysvar::instructions::id(), false),
-            AccountMeta::new_readonly(SPL_TOKEN_PROGRAM_ID, false),
+            AccountMeta::new_readonly(spl_token_program, false),
             AccountMeta::new_readonly(SPL_ATA_TOKEN_PROGRAM_ID, false),
             AccountMeta::new_readonly(MPL_TOKEN_AUTH_RULES_PROGRAM_ID, false),
             AccountMeta::new_readonly(rule_set, false),
