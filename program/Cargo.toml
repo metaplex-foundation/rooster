@@ -10,27 +10,25 @@ repository = "https://github.com/metaplex-foundation/rooster"
 readme = "../README.md"
 
 [dependencies]
-borsh = "0.9.3"
-mpl-token-metadata = { version = "1.9.1", features = ["no-entrypoint"] }
-mpl-utils = "0.0.5"
+borsh = "0.10.3"
+mpl-token-metadata = { version = "1.13.1", features = ["no-entrypoint"], path = "../../mpl-token-metadata/programs/token-metadata/program" }
+mpl-utils = { version = "0.3.0", path = "../../metaplex-program-library/core/rust/utils" }
 num-derive = "0.3.3"
 num-traits = "~0.2"
 shank = "0.0.10"
-solana-program = "1.14"
+solana-program = "~1.16.5"
 thiserror = "~1.0"
-
 
 [features]
 no-entrypoint = []
-test-bpf = []
+test-sbf = []
 
 [dev-dependencies]
 assert_matches = "1.5.0"
-solana-program-test = "1.14"
-solana-sdk = "1.14"
-solana-logger = "1.14"
+solana-program-test = "~1.16.5"
+solana-sdk = "~1.16.5"
+solana-logger = "~1.16.5"
 
 [lib]
 crate-type = ["cdylib", "lib"]
 name = "rooster"
-
