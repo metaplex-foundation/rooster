@@ -2061,9 +2061,9 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-auth-rules"
-version = "1.4.2"
+version = "1.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e6e8fec538f2899e9a76a00332422eef9258aafe0a8a2b00c5ea24da93ee2f0"
+checksum = "66b1ec5ee0570f688cc84ff4624c5c50732f1a2bfc789f6b34af5b563428d971"
 dependencies = [
  "borsh 0.10.3",
  "bytemuck",
@@ -2080,15 +2080,15 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-metadata"
-version = "1.13.1"
+version = "2.0.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84e73b5df66f4e6f98606e3fb327cbc6a0dba8df11085246f2e766949acb96bb"
+checksum = "d3545bd5fe73416f6514cd93899612e0e138619e72df8bc7d19906a12688c69e"
 dependencies = [
  "arrayref",
- "borsh 0.9.3",
+ "borsh 0.10.3",
  "mpl-token-auth-rules",
  "mpl-token-metadata-context-derive 0.3.0",
- "mpl-utils 0.2.0",
+ "mpl-utils",
  "num-derive",
  "num-traits",
  "shank 0.0.11",
@@ -2116,18 +2116,6 @@ checksum = "b5a739019e11d93661a64ef5fe108ab17c79b35961e944442ff6efdd460ad01a"
 dependencies = [
  "quote 1.0.32",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "mpl-utils"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "822133b6cba8f9a43e5e0e189813be63dd795858f54155c729833be472ffdb51"
-dependencies = [
- "arrayref",
- "borsh 0.9.3",
- "solana-program",
- "spl-token",
 ]
 
 [[package]]
@@ -2965,7 +2953,7 @@ dependencies = [
  "assert_matches",
  "borsh 0.10.3",
  "mpl-token-metadata",
- "mpl-utils 0.3.1",
+ "mpl-utils",
  "num-derive",
  "num-traits",
  "shank 0.0.10",
